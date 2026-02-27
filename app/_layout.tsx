@@ -1,24 +1,42 @@
-import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
-import { Stack } from 'expo-router';
-import { StatusBar } from 'expo-status-bar';
-import 'react-native-reanimated';
-
-import { useColorScheme } from '@/hooks/use-color-scheme';
-
-export const unstable_settings = {
-  anchor: '(tabs)',
-};
+import { Stack } from "expo-router";
+import { StatusBar } from "expo-status-bar";
+import { StyleSheet, View } from "react-native";
 
 export default function RootLayout() {
-  const colorScheme = useColorScheme();
-
   return (
-    <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-      <Stack>
+    <View style={styles.container}>
+      {/* Set status bar to light to contrast with our dark navy headers */}
+      <StatusBar style="light" />
+
+      <Stack
+        screenOptions={{
+          // Header configuration for any screen that is NOT in the tab bar
+          headerStyle: {
+            backgroundColor: "#0f172a", // Matching your NeuroScan Navy
+          },
+          headerTintColor: "#fff",
+          headerTitleStyle: {
+            fontWeight: "bold",
+          },
+          // Animation style for page transitions
+          animation: "fade_from_bottom",
+          headerShown: false, // We hide the root stack header because (tabs) has its own
+        }}
+      >
+        {/* The main group containing your 3 tabs */}
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen name="modal" options={{ presentation: 'modal', title: 'Modal' }} />
+
+        {/* You can add more screens here later, for example:
+            <Stack.Screen name="settings" options={{ presentation: 'modal', title: 'User Settings' }} /> 
+        */}
       </Stack>
-      <StatusBar style="auto" />
-    </ThemeProvider>
+    </View>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: "#0f172a", // Prevents white flashes during screen transitions
+  },
+});
